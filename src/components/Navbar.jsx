@@ -62,6 +62,17 @@ export default function Navbar({ activeTab, setActiveTab }) {
             <li>
               <button
                 onClick={() => {
+                  setActiveTab('delete-account');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`nav-link-item ${activeTab === 'delete-account' ? 'active' : ''}`}
+              >
+                DELETION
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
                   setActiveTab('contact');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}

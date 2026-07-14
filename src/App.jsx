@@ -7,6 +7,7 @@ import MasjidOnboardingForm from './components/MasjidOnboardingForm';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import TermsAndConditionsPage from './components/TermsAndConditionsPage';
 import ContactPage from './components/ContactPage';
+import DeleteAccountPage from './components/DeleteAccountPage';
 import AuthPage from './components/AuthPage';
 import Footer from './components/Footer';
 
@@ -16,6 +17,9 @@ export default function App() {
     const hash = window.location.hash.toLowerCase();
     const search = window.location.search.toLowerCase();
 
+    if (path.includes('/delete-account') || path.includes('/delete_account') || hash.includes('#delete-account') || search.includes('page=delete-account')) {
+      return 'delete-account';
+    }
     if (path.includes('/privacy') || hash.includes('#privacy') || search.includes('page=privacy')) {
       return 'privacy';
     }
@@ -69,6 +73,8 @@ export default function App() {
         {activeTab === 'privacy' && <PrivacyPolicyPage />}
 
         {activeTab === 'terms' && <TermsAndConditionsPage />}
+
+        {activeTab === 'delete-account' && <DeleteAccountPage />}
 
         {activeTab === 'contact' && <ContactPage />}
 

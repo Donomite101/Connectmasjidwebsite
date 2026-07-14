@@ -39,6 +39,11 @@ export default function Footer({ setActiveTab }) {
               </button>
             </li>
             <li>
+              <button onClick={() => { setActiveTab('delete-account'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                Account Deletion Information
+              </button>
+            </li>
+            <li>
               <button onClick={() => { setActiveTab('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
                 Contact Us
               </button>
