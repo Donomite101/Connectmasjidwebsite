@@ -23,7 +23,7 @@ export const deleteAccountData = {
       badge: "For Uninstalled Apps",
       description: "If you no longer have access to the mobile application or your device, you can submit a manual account deletion request via email:",
       steps: [
-        "Send an email from your registered email address to support@connectmasjid.com with the subject line: 'Account Deletion Request'.",
+        "Send an email from your registered email address to support.connectmasjid@gmail.com with the subject line: 'Account Deletion Request'.",
         "In the email body, provide your registered display name, email address, or phone number associated with your account.",
         "Our security team will send a brief confirmation reply or verification code (OTP) to verify ownership and prevent unauthorized deletion.",
         "Once verified, your account and associated records will be permanently erased within 7 to 14 business days."
@@ -76,7 +76,7 @@ export const deleteAccountData = {
   },
   contact: {
     title: "Contact Information & Support",
-    email: "support@connectmasjid.com",
+    email: "support.connectmasjid@gmail.com",
     address: "ConnectMasjid Platform Support",
     responseWindow: "Within 24–48 hours for verification queries; full deletion within 7–14 business days for manual email requests (or instant when performed inside the app)."
   }

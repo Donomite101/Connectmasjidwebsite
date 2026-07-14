@@ -57,8 +57,8 @@ export default function Footer({ setActiveTab }) {
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.9rem' }}>
             <li>
               <span style={{ color: 'var(--text-light)', fontSize: '0.8rem' }}>Email Support: </span>
-              <a href="mailto:support@connectmasjid.com" style={{ fontWeight: 600, color: 'var(--text-black)' }}>
-                support@connectmasjid.com
+              <a href="mailto:support.connectmasjid@gmail.com" style={{ fontWeight: 600, color: 'var(--text-black)' }}>
+                support.connectmasjid@gmail.com
               </a>
             </li>
           </ul>

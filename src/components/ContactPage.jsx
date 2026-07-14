@@ -45,8 +45,8 @@ export default function ContactPage() {
                 <div>
                   <div style={{ fontWeight: 700, color: 'var(--text-black)', fontSize: '0.95rem' }}>Email Support</div>
                   <div style={{ fontSize: '0.86rem', color: 'var(--text-gray)', marginBottom: '4px' }}>For general support & user queries</div>
-                  <a href="mailto:support@connectmasjid.com" style={{ fontWeight: 600, color: '#166534', fontSize: '0.92rem' }}>
-                    support@connectmasjid.com
+                  <a href="mailto:support.connectmasjid@gmail.com" style={{ fontWeight: 600, color: '#166534', fontSize: '0.92rem' }}>
+                    support.connectmasjid@gmail.com
                   </a>
                 </div>
               </div>
