@@ -1,0 +1,1 @@
+[{ "relation": ["delegate_permission/common.handle_all_urls"], "target": { "namespace": "android_app", "package_name": "com.connectmasjid.app", "sha256_cert_fingerprints": [ "70:68:07:CD:BE:73:61:F3:1D:EB:58:BF:B7:E1:CE:E3:59:8D:3E:C3" ] } }]
