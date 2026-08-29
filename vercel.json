@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/join/:slug",
+      "destination": "https://play.google.com/store/apps/details?id=com.connectmasjid.app&referrer=invite_code%3D:slug",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
