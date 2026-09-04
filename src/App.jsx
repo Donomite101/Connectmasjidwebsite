@@ -10,6 +10,8 @@ import ContactPage from './components/ContactPage';
 import DeleteAccountPage from './components/DeleteAccountPage';
 import AuthPage from './components/AuthPage';
 import Footer from './components/Footer';
+import LandingPage from './components/LandingPage';
+
 
 export default function App() {
   const getInitialTab = () => {
@@ -34,6 +36,9 @@ export default function App() {
     }
     if (path.includes('/auth') || path.includes('/login') || hash.includes('#auth')) {
       return 'auth';
+    }
+        if (path.includes('/invite') || path.includes('/mosque')) {
+      return 'landing-page';
     }
     return 'home';
   };
@@ -79,6 +84,8 @@ export default function App() {
         {activeTab === 'contact' && <ContactPage />}
 
         {activeTab === 'auth' && <AuthPage setActiveTab={handleTabChange} />}
+        {activeTab === 'landing-page' && <LandingPage />}
+
       </main>
 
       {/* Clean Footer */}

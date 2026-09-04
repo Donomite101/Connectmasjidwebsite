@@ -1,1 +1,1 @@
-[{ "relation": ["delegate_permission/common.handle_all_urls"], "target": { "namespace": "android_app", "package_name": "com.connectmasjid.app", "sha256_cert_fingerprints": [ "70:68:07:CD:BE:73:61:F3:1D:EB:58:BF:B7:E1:CE:E3:59:8D:3E:C3" ] } }]
+[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"android_app","package_name":"com.connectmasjid.app","sha256_cert_fingerprints":["D4:CD:7C:76:F5:59:3F:E0:D3:B4:DF:64:99:F7:52:F4:D4:3A:5D:A7:DB:E7:45:13:E8:5F:D9:8B:79:E6:AF:60"]}}]
