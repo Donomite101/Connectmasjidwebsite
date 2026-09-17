@@ -1,248 +1,395 @@
-import React, { useState } from 'react';
-import { Shield, Lock, User, LogIn, UserPlus, CheckCircle2, Building2, Mail } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShieldCheck, Lock, User, LogIn, UserPlus, CheckCircle2, Building2, Mail, Phone, Eye, EyeOff, RefreshCw, ArrowRight, Trash2 } from 'lucide-react';
+import './AuthPage.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://connectmasjid.duckdns.org/api';
 
 export default function AuthPage({ setActiveTab }) {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }, []);
+
   const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  // Form Fields State
   const [formData, setFormData] = useState({
     name: '',
+    emailOrPhone: '',
     email: '',
+    phone: '',
     password: '',
-    role: 'community' // 'community' or 'masjid_admin'
+    invite_code: '',
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError('');
-
-    if (!formData.email || !formData.password || (!isLogin && !formData.name)) {
-      setError('Please complete all required fields.');
-      return;
+  // User State from LocalStorage
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('cm_user');
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      return (parsed && typeof parsed === 'object') ? parsed : null;
+    } catch (e) {
+      return null;
     }
+  });
 
-    // Simulate authentication
-    setIsLoggedIn(true);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrorMsg('');
+    setSuccessMsg('');
+  };
+
+  // ── Live Backend Submit ──
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      if (isLogin) {
+        // LIVE BACKEND LOGIN
+        const res = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            emailOrPhone: formData.emailOrPhone,
+            password: formData.password,
+          }),
+        });
+
+        const data = await res.json();
+        if (res.ok && (data.status === 'SUCCESS' || data.token || data.user)) {
+          const userObj = data.user || {
+            name: formData.emailOrPhone.split('@')[0],
+            emailOrPhone: formData.emailOrPhone,
+          };
+          setUser(userObj);
+          localStorage.setItem('cm_user', JSON.stringify(userObj));
+          if (data.token) localStorage.setItem('cm_token', data.token);
+
+          setSuccessMsg('Successfully signed in to ConnectMasjid!');
+          setLoading(false);
+          return;
+        } else {
+          setErrorMsg(data.message || 'Invalid login credentials. Please check your details.');
+        }
+      } else {
+        // LIVE BACKEND REGISTER
+        const res = await fetch(`${API_BASE_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            password: formData.password,
+            invite_code: formData.invite_code,
+          }),
+        });
+
+        const data = await res.json();
+        if (res.ok && (data.status === 'SUCCESS' || data.token || data.user)) {
+          const userObj = data.user || {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+          };
+          setUser(userObj);
+          localStorage.setItem('cm_user', JSON.stringify(userObj));
+          if (data.token) localStorage.setItem('cm_token', data.token);
+
+          setSuccessMsg('Member account created successfully!');
+          setLoading(false);
+          return;
+        } else {
+          setErrorMsg(data.message || 'Registration failed. Please verify your details.');
+        }
+      }
+    } catch (err) {
+      console.error('Live auth request error:', err);
+      setErrorMsg('Network error. Unable to connect to ConnectMasjid live backend.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    setFormData({ name: '', email: '', password: '', role: 'community' });
+    setUser(null);
+    localStorage.removeItem('cm_user');
+    localStorage.removeItem('cm_token');
+    setFormData({ name: '', emailOrPhone: '', email: '', phone: '', password: '', invite_code: '' });
+    setErrorMsg('');
+    setSuccessMsg('');
   };
 
   return (
-    <section className="animate-fade-in" style={{ padding: '70px 0 100px' }}>
-      <div className="container" style={{ maxWidth: '520px' }}>
-        {isLoggedIn ? (
-          <div className="clean-form" style={{ padding: '44px', textAlign: 'center', borderRadius: '24px', border: '1px solid var(--border-line)', background: 'white', boxShadow: '0 10px 35px rgba(0,0,0,0.04)' }}>
-            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#f0fdf4', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#166534' }}>
-              <CheckCircle2 size={36} color="#4eb00a" />
+    <section className="ios-auth-section">
+      {/* Background iOS Spheres */}
+      <div className="ios-glow-sphere-1" />
+      <div className="ios-glow-sphere-2" />
+
+      <div className={`ios-auth-container ${!isLogin ? 'signup-mode' : ''}`}>
+        {user ? (
+          /* Signed In Dashboard View */
+          <div className="ios-auth-card ios-user-card">
+            <div className="ios-user-avatar">
+              <CheckCircle2 size={40} color="#00b83b" />
             </div>
-            <span className="pill-badge" style={{ marginBottom: '14px' }}>
-              {formData.role === 'masjid_admin' ? 'Masjid Administrator Account' : 'Community Member Account'}
+            <span className="ios-role-badge">
+              👤 ConnectMasjid Verified Member
             </span>
-            <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-black)', marginBottom: '8px' }}>
-              Welcome, {formData.name || formData.email.split('@')[0]}
+            <h2 className="ios-auth-title" style={{ marginTop: '10px' }}>
+              Welcome, {user.name || 'Member'}
             </h2>
-            <p style={{ color: 'var(--text-gray)', fontSize: '0.95rem', marginBottom: '28px' }}>
-              You are successfully signed in to the ConnectMasjid platform.
+            <p className="ios-auth-subtitle" style={{ marginBottom: '24px' }}>
+              Signed in as <strong>{user.email || user.emailOrPhone || user.phone || 'Member'}</strong>
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
               <button
                 onClick={() => {
-                  setActiveTab('onboarding');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  if (setActiveTab) setActiveTab('home');
+                  setTimeout(() => {
+                    const el = document.getElementById('nearby-masjids');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }, 150);
                 }}
-                className="btn btn-primary"
-                style={{ width: '100%', padding: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                className="ios-submit-btn"
               >
-                <Building2 size={18} /> Register / Onboard New Masjid
+                <span>Find Nearby Verified Mosques</span>
+                <ArrowRight size={18} />
               </button>
+
               <button
                 onClick={() => {
-                  setActiveTab('home');
+                  if (setActiveTab) setActiveTab('delete-account');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="btn btn-outline"
-                style={{ width: '100%', padding: '12px' }}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '14px',
+                  background: '#fef2f2',
+                  color: '#dc2626',
+                  border: '1px solid #fecaca',
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
               >
-                Return to Home Page
+                <Trash2 size={16} color="#dc2626" /> Delete My Account
               </button>
             </div>
 
-            <button
-              onClick={handleLogout}
-              style={{ background: 'none', border: 'none', color: '#dc2626', fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer' }}
-            >
-              Sign Out
+            <button onClick={handleLogout} className="ios-signout-btn">
+              Sign Out of Account
             </button>
           </div>
         ) : (
-          <div className="clean-form" style={{ padding: '44px', borderRadius: '24px', border: '1px solid var(--border-line)', background: 'white', boxShadow: '0 10px 35px rgba(0,0,0,0.04)' }}>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: '#f8fafc', border: '1px solid var(--border-line)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
-                <Shield size={26} color="#4eb00a" />
+          /* Full Screen Clean iPhone Style Auth Form */
+          <div className="ios-auth-card">
+            {/* Header */}
+            <div className="ios-auth-header">
+              <div className="ios-auth-icon-badge">
+                <ShieldCheck size={26} color="#00b83b" />
               </div>
-              <h1 style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--text-black)', marginBottom: '8px' }}>
-                {isLogin ? 'Sign in to ConnectMasjid' : 'Create Your Account'}
+              <h1 className="ios-auth-title">
+                {isLogin ? 'Sign In' : 'Create Account'}
               </h1>
-              <p style={{ color: 'var(--text-gray)', fontSize: '0.92rem' }}>
-                {isLogin ? 'Access your community portal & verified masjid tools' : 'Join the verified Muslim community network'}
+              <p className="ios-auth-subtitle">
+                {isLogin
+                  ? 'Access live verified timings, Adhan alerts & mosque notices'
+                  : 'Join thousands of Muslims & masjids connected worldwide'}
               </p>
             </div>
 
-            {/* Toggle tabs */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#f8fafc', padding: '4px', borderRadius: '14px', border: '1px solid var(--border-line)', marginBottom: '24px' }}>
+            {/* iOS Segmented Control */}
+            <div className="ios-segmented-control">
               <button
                 type="button"
-                onClick={() => { setIsLogin(true); setError(''); }}
-                style={{
-                  padding: '10px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  background: isLogin ? 'white' : 'transparent',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',
-                  color: isLogin ? 'var(--text-black)' : 'var(--text-gray)',
-                  boxShadow: isLogin ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
-                  cursor: 'pointer'
-                }}
+                className={`ios-segment-btn ${isLogin ? 'active' : ''}`}
+                onClick={() => { setIsLogin(true); setErrorMsg(''); setSuccessMsg(''); }}
               >
                 Sign In
               </button>
               <button
                 type="button"
-                onClick={() => { setIsLogin(false); setError(''); }}
-                style={{
-                  padding: '10px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  background: !isLogin ? 'white' : 'transparent',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',
-                  color: !isLogin ? 'var(--text-black)' : 'var(--text-gray)',
-                  boxShadow: !isLogin ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
-                  cursor: 'pointer'
-                }}
+                className={`ios-segment-btn ${!isLogin ? 'active' : ''}`}
+                onClick={() => { setIsLogin(false); setErrorMsg(''); setSuccessMsg(''); }}
               >
                 Sign Up
               </button>
             </div>
 
-            {error && (
-              <div style={{ padding: '12px 16px', background: '#fef2f2', color: '#dc2626', borderRadius: '12px', fontSize: '0.88rem', fontWeight: 600, marginBottom: '20px' }}>
-                {error}
-              </div>
-            )}
+            {/* Feedback Banners */}
+            {errorMsg && <div className="ios-alert error">{errorMsg}</div>}
+            {successMsg && <div className="ios-alert success">{successMsg}</div>}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-              {!isLogin && (
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.86rem', fontWeight: 700, marginBottom: '6px', color: 'var(--text-black)' }}>
-                    Full Name
-                  </label>
-                  <div style={{ position: 'relative' }}>
-                    <User size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-gray)' }} />
-                    <input
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Your Full Name"
-                      style={{ width: '100%', padding: '12px 16px 12px 44px', borderRadius: '12px', border: '1px solid var(--border-line)', background: '#f8fafc', fontSize: '0.92rem' }}
-                    />
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="ios-form">
+              {isLogin ? (
+                /* Sign In Fields */
+                <div className="ios-form-single">
+                  <div className="ios-input-group">
+                    <label className="ios-input-label">Email Address or Phone</label>
+                    <div className="ios-input-wrapper">
+                      <Mail size={18} className="ios-input-icon" />
+                      <input
+                        type="text"
+                        name="emailOrPhone"
+                        required
+                        value={formData.emailOrPhone}
+                        onChange={handleChange}
+                        placeholder="Enter email or phone number..."
+                        className="ios-input-field"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ios-input-group">
+                    <label className="ios-input-label">Password</label>
+                    <div className="ios-input-wrapper">
+                      <Lock size={18} className="ios-input-icon" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        required
+                        minLength={6}
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="••••••••"
+                        className="ios-input-field"
+                      />
+                      <button
+                        type="button"
+                        className="ios-eye-btn"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label="Toggle password visibility"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Sign Up Fields Grid for non-scrollable laptop view */
+                <div className="ios-form-grid">
+                  <div className="ios-input-group">
+                    <label className="ios-input-label">Full Name</label>
+                    <div className="ios-input-wrapper">
+                      <User size={18} className="ios-input-icon" />
+                      <input
+                        type="text"
+                        name="name"
+                        required
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="e.g. Tariq Rahman"
+                        className="ios-input-field"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ios-input-group">
+                    <label className="ios-input-label">Email Address</label>
+                    <div className="ios-input-wrapper">
+                      <Mail size={18} className="ios-input-icon" />
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="name@example.com"
+                        className="ios-input-field"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ios-input-group">
+                    <label className="ios-input-label">Phone Number (Optional)</label>
+                    <div className="ios-input-wrapper">
+                      <Phone size={18} className="ios-input-icon" />
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="+91 9876543210"
+                        className="ios-input-field"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ios-input-group">
+                    <label className="ios-input-label">Referral / Invite Code (Optional)</label>
+                    <div className="ios-input-wrapper">
+                      <input
+                        type="text"
+                        name="invite_code"
+                        value={formData.invite_code}
+                        onChange={handleChange}
+                        placeholder="e.g. CM12345"
+                        className="ios-input-field"
+                        style={{ paddingLeft: '16px' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ios-input-group full-width">
+                    <label className="ios-input-label">Password</label>
+                    <div className="ios-input-wrapper">
+                      <Lock size={18} className="ios-input-icon" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        required
+                        minLength={6}
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="••••••••"
+                        className="ios-input-field"
+                      />
+                      <button
+                        type="button"
+                        className="ios-eye-btn"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label="Toggle password visibility"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
 
-              <div>
-                <label style={{ display: 'block', fontSize: '0.86rem', fontWeight: 700, marginBottom: '6px', color: 'var(--text-black)' }}>
-                  Email Address or Phone
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <Mail size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-gray)' }} />
-                  <input
-                    type="text"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="name@example.com"
-                    style={{ width: '100%', padding: '12px 16px 12px 44px', borderRadius: '12px', border: '1px solid var(--border-line)', background: '#f8fafc', fontSize: '0.92rem' }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.86rem', fontWeight: 700, marginBottom: '6px', color: 'var(--text-black)' }}>
-                  Password
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <Lock size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-gray)' }} />
-                  <input
-                    type="password"
-                    required
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    placeholder="Enter password"
-                    style={{ width: '100%', padding: '12px 16px 12px 44px', borderRadius: '12px', border: '1px solid var(--border-line)', background: '#f8fafc', fontSize: '0.92rem' }}
-                  />
-                </div>
-              </div>
-
-              {/* Account Role Choice */}
-              <div>
-                <label style={{ display: 'block', fontSize: '0.86rem', fontWeight: 700, marginBottom: '8px', color: 'var(--text-black)' }}>
-                  Account Role
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, role: 'community' })}
-                    style={{
-                      padding: '12px',
-                      borderRadius: '12px',
-                      border: formData.role === 'community' ? '2px solid #4eb00a' : '1px solid var(--border-line)',
-                      background: formData.role === 'community' ? '#f0fdf4' : 'white',
-                      fontWeight: 700,
-                      fontSize: '0.82rem',
-                      color: formData.role === 'community' ? '#166534' : 'var(--text-gray)',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Community Member
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, role: 'masjid_admin' })}
-                    style={{
-                      padding: '12px',
-                      borderRadius: '12px',
-                      border: formData.role === 'masjid_admin' ? '2px solid #4eb00a' : '1px solid var(--border-line)',
-                      background: formData.role === 'masjid_admin' ? '#f0fdf4' : 'white',
-                      fontWeight: 700,
-                      fontSize: '0.82rem',
-                      color: formData.role === 'masjid_admin' ? '#166534' : 'var(--text-gray)',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Masjid Administrator
-                  </button>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn-primary"
-                style={{ width: '100%', padding: '14px', fontSize: '1rem', marginTop: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-              >
-                {isLogin ? (
+              <button type="submit" className="ios-submit-btn" disabled={loading}>
+                {loading ? (
                   <>
-                    <LogIn size={18} /> Sign In
+                    <RefreshCw size={18} className="spin-icon" />
+                    <span>Processing...</span>
+                  </>
+                ) : isLogin ? (
+                  <>
+                    <span>Sign In</span>
+                    <LogIn size={18} />
                   </>
                 ) : (
                   <>
-                    <UserPlus size={18} /> Create Account
+                    <span>Create Account</span>
+                    <UserPlus size={18} />
                   </>
                 )}
               </button>

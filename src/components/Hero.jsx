@@ -1,167 +1,304 @@
-import React from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Download, ChevronRight } from 'lucide-react';
+import gsap from 'gsap';
 
-export default function Hero({ onExplore }) {
+/* ── Real verified masjids from ConnectMasjid database ── */
+const MOSQUE_POOL = [
+  { name: 'Masjid e Madina', weight: 700, size: '1rem' },
+  { name: 'Masjid E Hassan', weight: 400, size: '1.05rem', italic: true },
+  { name: 'Masjid E Tooba', weight: 800, size: '1.1rem', spacing: '-0.02em' },
+  { name: 'Masjid Hazrat Bilal', weight: 700, size: '1rem' },
+  { name: 'Hazrat Abu Bakr Masjid', weight: 900, size: '1.15rem', spacing: '-0.03em' },
+  { name: 'AFMC Masjid', weight: 800, size: '1.1rem', spacing: '-0.01em' },
+  { name: 'Azam Campus Masjid', weight: 600, size: '0.98rem' },
+  { name: 'Jama Masjid Bahul', weight: 400, size: '1.05rem', italic: true },
+  { name: 'Hussenia Masjid', weight: 700, size: '1rem' },
+  { name: 'Jai Jawan Society Masjid', weight: 500, size: '0.9rem', spacing: '0.05em', upper: true },
+  { name: 'Sholpaur Bazar Masjid', weight: 600, size: '0.97rem' },
+  { name: 'New Modikhana Masjid', weight: 700, size: '1rem' },
+  { name: 'Poona College Masjid', weight: 800, size: '1.08rem', spacing: '-0.02em' },
+  { name: 'Takiya Shahi Masjid', weight: 900, size: '1.15rem', spacing: '-0.03em' },
+  { name: 'Mulani Masjid', weight: 500, size: '0.88rem', spacing: '0.06em', upper: true },
+  { name: 'Shahi Masjid Markel', weight: 700, size: '1rem' },
+  { name: 'Misgar Masjid', weight: 400, size: '1.05rem', italic: true },
+  { name: 'Masjid Jamiatul Quraish', weight: 800, size: '1.05rem', spacing: '-0.015em' },
+  { name: 'Usmaniya Masjid', weight: 900, size: '1.18rem', spacing: '-0.03em' },
+  { name: 'Jama Masjid Ahl E Sunnat', weight: 600, size: '0.95rem' },
+  { name: 'Masjid E Maulana Ilyaas', weight: 700, size: '1rem' },
+];
+
+function toStyle(m) {
+  return {
+    fontWeight: m.weight,
+    fontSize: m.size,
+    fontStyle: m.italic ? 'italic' : 'normal',
+    letterSpacing: m.spacing ?? 'normal',
+    textTransform: m.upper ? 'uppercase' : 'none',
+  };
+}
+
+const SLOTS = 6;
+
+function pickRandom(pool, exclude = []) {
+  const available = pool.filter(m => !exclude.includes(m.name));
+  return available[Math.floor(Math.random() * available.length)];
+}
+
+function initSlots() {
+  const used = [];
+  return Array.from({ length: SLOTS }, (_, i) => {
+    const m = pickRandom(MOSQUE_POOL, used);
+    used.push(m.name);
+    return { mosque: m, uid: `slot-${i}-init` };
+  });
+}
+
+export default function Hero({ onExplore, openAuthModal }) {
+  const [slots, setSlots] = useState(initSlots);
+  const [exiting, setExiting] = useState(false);
+  const intervalRef = useRef(null);
+  const heroRef = useRef(null);
+  const ctaBtnRef = useRef(null);
+
+  /* CountUp numbers state */
+  const [masjidCount, setMasjidCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);
+  const [ratingVal, setRatingVal] = useState(0);
+
+  /* GSAP high-CTR animations */
+  useEffect(() => {
+    if (!heroRef.current) return;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      /* 1. Main title spring reveal */
+      tl.from('.hero-display-title', {
+        y: 45,
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.95,
+        ease: 'back.out(1.2)',
+        delay: 0.1,
+      })
+        /* 3. Subtitle fade up */
+        .from('.hero-sub', {
+          y: 25,
+          opacity: 0,
+          duration: 0.75,
+        }, '-=0.6')
+        /* 4. CTA row bounce entrance */
+        .from('.hero-cta-row', {
+          y: 25,
+          opacity: 0,
+          scale: 0.92,
+          duration: 0.8,
+          ease: 'back.out(1.4)',
+        }, '-=0.5')
+        /* 5. Stats card scale pop + trigger number CountUp */
+        .from('.hero-stats-card', {
+          y: 35,
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.85,
+          ease: 'back.out(1.3)',
+          onComplete: () => {
+            /* Number CountUp Tweens */
+            const countObj = { m: 0, u: 0, r: 0 };
+            gsap.to(countObj, {
+              m: 100,
+              u: 500,
+              r: 5.0,
+              duration: 1.8,
+              ease: 'power2.out',
+              onUpdate: () => {
+                setMasjidCount(Math.floor(countObj.m));
+                setUserCount(Math.floor(countObj.u));
+                setRatingVal(countObj.r.toFixed(1));
+              },
+            });
+
+            /* Continuous Levitation / Float Loop */
+            gsap.to('.hero-stats-card', {
+              y: -10,
+              duration: 2.6,
+              repeat: -1,
+              yoyo: true,
+              ease: 'sine.inOut',
+            });
+          },
+        }, '-=0.45')
+        /* 6. Social proof bar fade */
+        .from('.hero-social-proof', {
+          y: 20,
+          opacity: 0,
+          duration: 0.8,
+        }, '-=0.4');
+
+      /* Continuous gentle pulse on main CTA button scale */
+      gsap.to('.btn-green-pill', {
+        scale: 1.025,
+        duration: 1.6,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  /* Magnetic hover effect on main CTA */
+  const handleMouseMove = (e) => {
+    if (!ctaBtnRef.current) return;
+    const rect = ctaBtnRef.current.getBoundingClientRect();
+    const btnCenterX = rect.left + rect.width / 2;
+    const btnCenterY = rect.top + rect.height / 2;
+    const distX = e.clientX - btnCenterX;
+    const distY = e.clientY - btnCenterY;
+
+    if (Math.abs(distX) < 140 && Math.abs(distY) < 80) {
+      gsap.to(ctaBtnRef.current, {
+        x: distX * 0.28,
+        y: distY * 0.28,
+        rotate: distX * 0.03,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    } else {
+      gsap.to(ctaBtnRef.current, {
+        x: 0,
+        y: 0,
+        rotate: 0,
+        duration: 0.45,
+        ease: 'power2.out',
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (ctaBtnRef.current) {
+      gsap.to(ctaBtnRef.current, {
+        x: 0,
+        y: 0,
+        rotate: 0,
+        duration: 0.5,
+        ease: 'elastic.out(1, 0.4)',
+      });
+    }
+  };
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setExiting(true);
+      setTimeout(() => {
+        setSlots(() => {
+          const used = [];
+          return Array.from({ length: SLOTS }, (_, i) => {
+            const m = pickRandom(MOSQUE_POOL, used);
+            used.push(m.name);
+            return { mosque: m, uid: `slot-${i}-${Date.now()}` };
+          });
+        });
+        setExiting(false);
+      }, 400);
+    }, 2800);
+
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
   return (
-    <>
-      <section className="hero-wrapper">
-        {/* Center Diagonal Realistic 3D Mosque Pillar / Tapered Slim Minaret with Golden Crescent Finial */}
-        <div className="hero-diagonal-object">
-          <svg viewBox="0 0 320 560" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              {/* Polished White Marble / Stone 3D Cylinder Shading */}
-              <linearGradient id="marbleShaft" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#cbd5e1" />
-                <stop offset="20%" stopColor="#f8fafc" />
-                <stop offset="48%" stopColor="#ffffff" />
-                <stop offset="78%" stopColor="#e2e8f0" />
-                <stop offset="95%" stopColor="#64748b" />
-                <stop offset="100%" stopColor="#334155" />
-              </linearGradient>
+    <section ref={heroRef} className="hero-v2" id="hero" aria-label="Hero section">
+      {/* Ambient glow blobs */}
+      <div className="hero-glow-blob hero-glow-blob-1" aria-hidden="true" />
+      <div className="hero-glow-blob hero-glow-blob-2" aria-hidden="true" />
+      <div className="hero-glow-blob hero-glow-blob-3" aria-hidden="true" />
 
-              {/* Darker Marble Fluting Shadow */}
-              <linearGradient id="marbleFlute" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#e2e8f0" stopOpacity="0.8" />
-                <stop offset="50%" stopColor="#94a3b8" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#475569" stopOpacity="0.8" />
-              </linearGradient>
+      <div className="hero-content">
+        {/* Main giant headline */}
+        <h1 className="hero-display-title">
+          The Masjid App<br />
+          Your{' '}
+          <span className="green-word">Community</span>
+          <br />
+          <span className="italic-light">Deserves</span>
+        </h1>
 
-              {/* Ornate Gold Metallic Capital & Finial */}
-              <linearGradient id="goldOrnate" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#fef08a" />
-                <stop offset="35%" stopColor="#facc15" />
-                <stop offset="65%" stopColor="#ca8a04" />
-                <stop offset="100%" stopColor="#854d0e" />
-              </linearGradient>
+        {/* Subtitle */}
+        <p className="hero-sub">
+          Live Jama'at timings and verified mosque updates — all in one place.
+        </p>
 
-              {/* Deep Emerald Geometric Inlay */}
-              <linearGradient id="emeraldInlay" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#047857" />
-                <stop offset="45%" stopColor="#10b981" />
-                <stop offset="85%" stopColor="#059669" />
-                <stop offset="100%" stopColor="#064e3b" />
-              </linearGradient>
-
-              {/* Specular Gloss Highlight */}
-              <linearGradient id="pillarGloss" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="white" stopOpacity="0" />
-                <stop offset="35%" stopColor="white" stopOpacity="0.8" />
-                <stop offset="45%" stopColor="white" stopOpacity="0.95" />
-                <stop offset="65%" stopColor="white" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="white" stopOpacity="0" />
-              </linearGradient>
-
-              <filter id="pillarShadow" x="-30%" y="-20%" width="160%" height="150%">
-                <feDropShadow dx="16" dy="25" stdDeviation="18" floodColor="#090d16" floodOpacity="0.28" />
-              </filter>
-            </defs>
-
-            {/* Tilted Mosque Architectural Pillar Group */}
-            <g filter="url(#pillarShadow)">
-              {/* 1. WIDE PILLAR PEDESTAL / BASE (Bottom) */}
-              <path d="M 50 535 L 170 535 L 158 495 L 62 495 Z" fill="url(#marbleShaft)" stroke="#64748b" strokeWidth="1.5" />
-              <path d="M 64 495 L 156 495 L 150 475 L 70 475 Z" fill="url(#goldOrnate)" />
-
-              {/* 2. LOWER SUBSTANTIAL MARBLE SHAFT */}
-              <path d="M 72 475 L 148 475 L 144 315 L 76 315 Z" fill="url(#marbleShaft)" />
-              {/* Flutes on Lower Shaft */}
-              <line x1="86" y1="475" x2="86" y2="315" stroke="url(#marbleFlute)" strokeWidth="3" />
-              <line x1="100" y1="475" x2="100" y2="315" stroke="url(#marbleFlute)" strokeWidth="3.5" />
-              <line x1="118" y1="475" x2="118" y2="315" stroke="url(#marbleFlute)" strokeWidth="3" />
-              <line x1="134" y1="475" x2="134" y2="315" stroke="url(#marbleFlute)" strokeWidth="3" />
-              {/* Gloss */}
-              <path d="M 94 475 L 114 475 L 114 315 L 94 315 Z" fill="url(#pillarGloss)" opacity="0.65" />
-
-              {/* 3. MIDDLE ORNATE BALCONY / MUQARNAS TRANSITION COLLAR */}
-              <path d="M 68 315 L 152 315 L 160 290 L 60 290 Z" fill="url(#goldOrnate)" />
-              <path d="M 60 290 L 160 290 L 150 270 L 70 270 Z" fill="url(#emeraldInlay)" stroke="url(#goldOrnate)" strokeWidth="2" />
-              {/* Gold Islamic Arch Reliefs on Collar */}
-              <path d="M 70 290 Q 80 278 90 290 Q 100 278 110 290 Q 120 278 130 290 Q 140 278 150 290" fill="none" stroke="#fef08a" strokeWidth="2.5" />
-
-              {/* 4. SLIM / TAPERED UPPER MINARET SHAFT */}
-              {/* Notice how it tapers significantly narrower toward the top (from width 76 to width 44) */}
-              <path d="M 76 270 L 144 270 L 132 140 L 88 140 Z" fill="url(#marbleShaft)" />
-              {/* Flutes on Slim Upper Shaft */}
-              <line x1="88" y1="270" x2="96" y2="140" stroke="url(#marbleFlute)" strokeWidth="2.5" />
-              <line x1="103" y1="270" x2="106" y2="140" stroke="url(#marbleFlute)" strokeWidth="3" />
-              <line x1="117" y1="270" x2="114" y2="140" stroke="url(#marbleFlute)" strokeWidth="3" />
-              <line x1="132" y1="270" x2="124" y2="140" stroke="url(#marbleFlute)" strokeWidth="2.5" />
-              {/* Specular Gloss on Slim Upper Shaft */}
-              <path d="M 98 270 L 114 270 L 112 140 L 100 140 Z" fill="url(#pillarGloss)" opacity="0.75" />
-
-              {/* 5. SLIM UPPER BALCONY / CROWN CAPITAL */}
-              <path d="M 82 140 L 138 140 L 144 118 L 76 118 Z" fill="url(#goldOrnate)" />
-              <path d="M 78 118 L 142 118 L 132 98 L 88 98 Z" fill="url(#marbleShaft)" stroke="#64748b" strokeWidth="1.5" />
-
-              {/* 6. ARCHITECTURAL DOME & GRAND GOLDEN CRESCENT FINIAL */}
-              {/* Emerald Geometric Dome */}
-              <path d="M 88 98 Q 110 55 132 98 Z" fill="url(#emeraldInlay)" stroke="url(#goldOrnate)" strokeWidth="2.5" />
-
-              {/* Golden Spire Mast ascending */}
-              <line x1="110" y1="70" x2="110" y2="36" stroke="url(#goldOrnate)" strokeWidth="4.5" strokeLinecap="round" />
-              <circle cx="110" cy="52" r="5" fill="url(#goldOrnate)" />
-              <circle cx="110" cy="36" r="3.5" fill="url(#goldOrnate)" />
-
-              {/* Prominent Golden Crescent Moon & Star Crowning the Top */}
-              <g transform="translate(108, 6) scale(1.35)">
-                {/* Crescent Moon */}
-                <path d="M 8 16 C -3 14, -4 0, 7 -2 C -1 3, -1 11, 8 16 Z" fill="url(#goldOrnate)" filter="drop-shadow(0 2px 4px rgba(234, 179, 8, 0.45))" />
-                {/* Islamic Star */}
-                <polygon points="12,5 13,8 16,8 14,10 15,13 12,11 9,13 10,10 8,8 11,8" fill="url(#goldOrnate)" />
-              </g>
-            </g>
-          </svg>
+        {/* CTA row with magnetic hover listener */}
+        <div
+          className="hero-cta-row"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
+          <a
+            ref={ctaBtnRef}
+            id="hero-download-btn"
+            className="btn-green-pill"
+            href="https://play.google.com/store/apps/details?id=com.connectmasjid.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Download ConnectMasjid app on Google Play"
+          >
+            <Download size={18} />
+            Download the App
+          </a>
+          <button
+            id="hero-signup-btn"
+            className="btn-ghost-pill"
+            onClick={onExplore}
+            aria-label="Sign up for free"
+          >
+            Sign Up for Free
+            <ChevronRight size={16} />
+          </button>
         </div>
 
-        {/* Top Headline Section */}
-        <div className="hero-headline-container">
-          <span className="script-top">Digital Platform For</span>
-
-          <h1 className="giant-title">
-            Masjid Communities
-            <span className="script-bottom">Install & Connect</span>
-          </h1>
-
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <p className="hero-subtitle-top">
-              A Modern Digital Platform for Muslims & Masjid Administrators
-            </p>
+        {/* Floating stats card with live animated numbers */}
+        <div className="hero-stats-card" role="region" aria-label="App statistics">
+          <div className="hero-stat-item">
+            <div className="hero-stat-number">{masjidCount}<span>+</span></div>
+            <div className="hero-stat-label">Verified Masjids</div>
           </div>
-        </div>
-
-        {/* Bottom Row: Minimal CTA Button Only */}
-        <div className="hero-bottom-row">
-          <div className="hero-cta-box">
-            <button onClick={onExplore} className="btn-neon-pill" style={{ marginBottom: 0 }}>
-              <span>EXPLORE MASJID APP</span>
-              <div className="btn-circle-icon">
-                <ArrowUpRight size={18} />
-              </div>
-            </button>
+          <div className="hero-stat-divider" aria-hidden="true" />
+          <div className="hero-stat-item">
+            <div className="hero-stat-number">{userCount}<span>+</span></div>
+            <div className="hero-stat-label">Active Users</div>
           </div>
-        </div>
-      </section>
-
-      {/* Exactly matching Nibfolio Ticker Divider Strip */}
-      <div className="ticker-divider">
-        <div className="ticker-grid">
-          <div className="ticker-feature-item">
-            <span>500+ Verified masjids</span>
-          </div>
-          <span className="star-symbol">✦</span>
-          <div className="ticker-feature-item">
-            <span>Live Jamaat Sync</span>
-          </div>
-          <span className="star-symbol">✦</span>
-          <div className="ticker-feature-item">
-            <span>TLS 1.3 Secure</span>
-          </div>
-          <span className="star-symbol">✦</span>
-          <div className="ticker-feature-item">
-            <span>Global Community</span>
+          <div className="hero-stat-divider" aria-hidden="true" />
+          <div className="hero-stat-item">
+            <div className="hero-stat-number">{ratingVal > 0 ? ratingVal : '0.0'}<span>★</span></div>
+            <div className="hero-stat-label">App Store Rating</div>
           </div>
         </div>
       </div>
-    </>
+
+      {/* Social proof — cycling masjid names */}
+      <div className="hero-social-proof">
+        <div className="hero-proof-tagline">
+          <span className="hero-proof-line" />
+          <span className="hero-proof-text">
+            Trusted by <strong>100+ masjids</strong> and their communities worldwide.
+          </span>
+          <span className="hero-proof-line" />
+        </div>
+
+        <div className="hero-proof-logos">
+          {slots.map((slot, i) => (
+            <span
+              key={slot.uid}
+              className={`hero-proof-logo ${exiting ? 'proof-exit' : 'proof-enter'}`}
+              style={toStyle(slot.mosque)}
+              aria-label={slot.mosque.name}
+            >
+              {slot.mosque.name}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

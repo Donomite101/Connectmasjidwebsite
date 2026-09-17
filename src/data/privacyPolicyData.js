@@ -140,9 +140,8 @@ export const privacyPolicyData = {
       title: "9. Contact Information",
       intro: "If you have any questions, privacy requests, or feedback regarding this Privacy Policy or your data rights, please contact our support team:",
       contacts: [
-        { label: "Email Support", value: "noreplydeenconnects@gmail.com", href: "mailto:noreplydeenconnects@gmail.com" },
-        { label: "Admin Contact", value: "amanullahpathan9854@gmail.com", href: "mailto:amanullahpathan9854@gmail.com" },
-        { label: "Platform", value: "ConnectMasjid Community Support", href: "#support" }
+        { label: "Email Support", value: "support.connectmasjid@gmail.com", href: "mailto:support.connectmasjid@gmail.com" },
+        { label: "Platform", value: "ConnectMasjid Community Support", href: "/contact" }
       ]
     }
   ]

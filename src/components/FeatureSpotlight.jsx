@@ -159,7 +159,7 @@ export default function FeatureSpotlight({ onRegisterMasjid }) {
               className="btn btn-primary"
               style={{ padding: '14px 28px', fontSize: '0.98rem' }}
             >
-              <span>Onboard Your Mosque Today</span>
+              <span>Join ConnectMasjid Today</span>
               <ArrowRight size={18} />
             </button>
           </div>

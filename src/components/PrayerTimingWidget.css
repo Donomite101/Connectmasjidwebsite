@@ -1,0 +1,233 @@
+/* Floating Bottom-Right Container */
+.cm-widget-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  font-family: inherit;
+}
+
+/* Floating Pill Button */
+.cm-widget-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cm-widget-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -5px rgba(0, 0, 0, 0.35);
+}
+
+.pill-live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #00b83b;
+  border: 2px solid #ffffff;
+}
+
+.pill-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.pill-next-label {
+  color: #94a3b8;
+}
+
+.pill-next-label strong {
+  color: #00b83b;
+}
+
+.pill-time {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.pill-toggle-icon {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Expanded Card Popup */
+.cm-widget-card {
+  position: absolute;
+  bottom: 56px;
+  right: 0;
+  width: 310px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  animation: widgetSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes widgetSlideUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.widget-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.widget-mosque-name {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.widget-mosque-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.widget-notif-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.widget-notif-btn.active {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+/* Alert Mode Pills Row */
+.widget-alert-mode-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  background: #f8fafc;
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.alert-mode-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.alert-mode-pills {
+  display: flex;
+  gap: 4px;
+}
+
+.mode-pill {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-pill.active {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.sound-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.2s;
+}
+
+.sound-toggle-btn.active {
+  color: #00b83b;
+}
+
+.widget-timings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.widget-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.widget-row.highlight {
+  background: #00b83b;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.widget-notif-cta-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.widget-notif-cta-btn:hover {
+  background: #1e293b;
+}
+
+@media (max-width: 640px) {
+  .cm-widget-container {
+    bottom: 16px;
+    right: 16px;
+  }
+  .cm-widget-card {
+    width: calc(100vw - 32px);
+    max-width: 310px;
+  }
+}

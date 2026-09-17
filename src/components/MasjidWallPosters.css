@@ -1,0 +1,324 @@
+/* ============================================
+   MASJID WALL POSTERS SECTION STYLES (TRAIN MARQUEE)
+   ============================================ */
+
+.masjid-posters-section {
+  padding: 30px 0 50px;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f6fa 50%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Marquee Container with subtle gradient edge fades */
+.masjid-posters-marquee-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+/* Track running continuously like a train from right to left */
+.masjid-posters-marquee-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  padding: 16px 0;
+  animation: marquee-scroll 45s linear infinite;
+  will-change: transform;
+}
+
+/* Pause train on hover so user can easily click/view posters */
+.masjid-posters-marquee-container:hover .masjid-posters-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 3));
+  }
+}
+
+/* Outer Soft Grey Cards (Spacious Container) */
+.poster-card-jitter {
+  flex: 0 0 300px;
+  width: 300px;
+  background: #eff2f6;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 28px;
+  padding: 24px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.poster-card-jitter:hover {
+  transform: translateY(-8px);
+  background: #e8ecf2;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+  border-color: rgba(0, 184, 59, 0.3);
+}
+
+/* Centered Inner Photo Box (Smaller Photo Floating in Card) */
+.poster-card-image-box {
+  position: relative;
+  width: 70%;
+  aspect-ratio: 3 / 4;
+  margin: 6px auto;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.poster-card-jitter:hover .poster-card-image-box {
+  transform: scale(1.03);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+}
+
+.poster-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Card Footer Meta Row */
+.poster-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+  width: 100%;
+}
+
+.poster-card-avatar {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #0f172a;
+  border: 1px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.poster-card-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.poster-card-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.poster-card-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.poster-card-sub {
+  font-size: 0.72rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+  font-weight: 500;
+}
+
+/* Lightbox Modal */
+.poster-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.25s ease;
+}
+
+.poster-lightbox-modal {
+  position: relative;
+  background: #ffffff;
+  border-radius: 28px;
+  max-width: 840px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.poster-lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.6);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.poster-lightbox-close:hover {
+  background: #00b83b;
+}
+
+.poster-lightbox-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.poster-lightbox-media {
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.poster-lightbox-media img {
+  width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.poster-lightbox-details {
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lightbox-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #05882c;
+  margin-bottom: 10px;
+}
+
+.poster-lightbox-details h3 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.lightbox-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: #475569;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.lightbox-category {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 8px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.lightbox-desc {
+  font-size: 0.92rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.lightbox-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.lightbox-btn-primary {
+  padding: 12px 24px;
+  background: #00b83b;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 14px rgba(0, 184, 59, 0.3);
+  transition: all 0.2s ease;
+}
+
+.lightbox-btn-primary:hover {
+  background: #009931;
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive Breakdown */
+@media (max-width: 900px) {
+  .poster-lightbox-content {
+    grid-template-columns: 1fr;
+  }
+  .poster-lightbox-media img {
+    max-height: 300px;
+  }
+  .poster-lightbox-details {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .poster-card-jitter {
+    flex: 0 0 250px;
+    width: 250px;
+    padding: 18px 14px 14px;
+  }
+  .poster-card-image-box {
+    width: 75%;
+  }
+}

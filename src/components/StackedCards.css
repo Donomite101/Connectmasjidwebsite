@@ -1,0 +1,150 @@
+/* ============================================
+   STACKED CARDS (HOW IT WORKS) STYLES
+   ============================================ */
+
+.stacked-section-smooth {
+  padding: 90px 24px 120px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+  position: relative;
+}
+
+.stacked-section-header {
+  max-width: 660px;
+  margin: 0 auto 60px;
+  text-align: center;
+}
+
+.stacked-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: #eefcf2;
+  border: 1px solid rgba(0, 184, 59, 0.2);
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #05882c;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.stacked-heading {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+/* Sticky Stack Track Container */
+.stacked-sticky-container {
+  max-width: 660px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 60px;
+}
+
+/* Individual Tall Sticky Card */
+.stack-card-sticky-item {
+  position: sticky;
+  border-radius: 36px;
+  padding: 56px 48px 44px;
+  margin-bottom: 70px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 540px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stack-card-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.stack-pill-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  margin-bottom: 28px;
+}
+
+.stack-card-content {
+  max-width: 500px;
+}
+
+.stack-card-title-text {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+.stack-card-description {
+  font-size: 1.12rem;
+  color: rgba(255, 255, 255, 0.94);
+  line-height: 1.65;
+  font-weight: 500;
+}
+
+/* Watermark Giant Number in Bottom-Right Corner */
+.stack-giant-display {
+  position: absolute;
+  bottom: -15px;
+  right: 24px;
+  font-size: clamp(7rem, 18vw, 11rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  user-select: none;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .stacked-section-smooth {
+    padding: 60px 16px 60px;
+  }
+  
+  .stack-card-sticky-item {
+    padding: 36px 24px 28px;
+    border-radius: 26px;
+    margin-bottom: 44px;
+    min-height: 380px;
+  }
+
+  .stack-card-title-text {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .stack-card-description {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .stack-pill-tag {
+    font-size: 0.78rem;
+    padding: 6px 14px;
+    margin-bottom: 18px;
+  }
+
+  .stack-giant-display {
+    font-size: 6.5rem;
+    bottom: -10px;
+    right: 14px;
+  }
+}

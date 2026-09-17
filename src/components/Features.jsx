@@ -1,98 +1,111 @@
 import React from 'react';
-import { Clock, Bell, ShieldCheck, MapPin, Users, Compass, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Navigation, BellRing, Play, Clock, Plus, MousePointer } from 'lucide-react';
 
-export default function Features() {
-  const features = [
-    {
-      icon: Clock,
-      tag: 'LIVE TIMINGS',
-      title: 'Connect With Your Masjid',
-      desc: 'Connect directly with your local masjid and get live, verified daily Jamaat times instantly synced to your device.',
-      stat: 'Instant Jamaat Sync'
-    },
-    {
-      icon: Bell,
-      tag: 'INSTANT ALERTS',
-      title: 'Real-Time Adhan & Alerts',
-      desc: 'Receive instant Adhan reminders, Friday (Jumuah) announcements, and important community notices directly on your mobile device.',
-      stat: 'Instant Push Notifications'
-    },
-    {
-      icon: ShieldCheck,
-      tag: 'ADMIN VERIFIED',
-      title: 'Mosque Admin Verification',
-      desc: 'Ensures complete authenticity by verifying registered mosque administrators through secure verification codes to prevent unauthorized changes.',
-      stat: '100% Verified Admins'
-    },
-    {
-      icon: Compass,
-      tag: 'PRECISION QIBLA',
-      title: 'Precise Qibla & Distance',
-      desc: 'Automatically detects nearby masjids, calculates accurate Qibla direction, and displays precise prayer times for your exact location.',
-      stat: 'Exact Bearing & Compass'
-    },
-    {
-      icon: Users,
-      tag: 'COMMUNITY FIRST',
-      title: 'Community Connection',
-      desc: 'Allows community members to join, follow, and interact with their registered masjids in a clean, distraction-free environment.',
-      stat: 'Zero Clutter'
-    },
-    {
-      icon: MapPin,
-      tag: 'SECURE DATA',
-      title: '100% Privacy Protected',
-      desc: 'Your personal data and location stay strictly confidential with enterprise-grade security protocols protecting every connection.',
-      stat: 'End-to-End Encrypted'
-    }
-  ];
-
+export default function Features({ onExplore }) {
   return (
-    <section className="what-you-can-section">
-      {/* Shifted toward left with prominent styling */}
-      <div className="features-header-left">
-        <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
-          <h2 className="nib-heading" style={{ whiteSpace: 'nowrap' }}>What Our App</h2>
-          <span className="nib-heading-script" style={{ whiteSpace: 'nowrap', marginLeft: '12px' }}>Has</span>
-        </div>
-        <p className="features-subtitle-left">
-          Discover professional features engineered specifically for modern masjid congregations and administrators.
-        </p>
-      </div>
+    <section className="features-v3" id="features" aria-label="App features">
+      <div className="cards-grid-3col">
 
-      <div className="nib-feature-grid">
-        {features.map((feat, idx) => {
-          const Icon = feat.icon;
-          return (
-            <div key={idx} className="nib-card animated-feature-card">
-              {/* Top Row: Icon + Feature Tag Badge */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px' }}>
-                <div className="feature-icon-box">
-                  <Icon size={22} color="#111315" className="feature-icon-svg" />
-                </div>
-                <span className="feature-tag-pill">{feat.tag}</span>
+        {/* ── CARD 1: ACCURATE PRAYER TIMES ── */}
+        <div className="card-3col">
+          <div className="card-3col-top">
+            <h3 className="card-3col-title">
+              Accurate Prayer<br />Times
+            </h3>
+            <div className="card-3col-icon-green">
+              <Navigation size={28} fill="#00b83b" color="#00b83b" style={{ transform: 'rotate(45deg)' }} />
+            </div>
+          </div>
+
+          <div className="card-3col-body">
+            <div className="card-3col-location">
+              Baitul Markaz, Indapur • 3mins by walk
+            </div>
+
+            <div className="card-inner-box">
+              <div className="card-prayer-name">Zuhr</div>
+              <div className="card-prayer-time-large">01:00PM</div>
+              <div className="card-time-pill-dark">
+                <span className="card-pill-bar" />
+                starts in 36 mins
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── CARD 2: GET NOTICES OF YOUR MASJID ── */}
+        <div className="card-3col">
+          <div className="card-3col-top-stacked">
+            <div className="card-megaphone-icon">
+              <BellRing size={38} color="#00b83b" strokeWidth={2.2} />
+            </div>
+            <h3 className="card-3col-title" style={{ marginTop: 18 }}>
+              Get Notices of<br />Your Masjid<br />
+              <span className="text-green-accent">Instantly</span>
+            </h3>
+          </div>
+
+          <div className="card-3col-body">
+            <div className="card-3col-location" style={{ marginBottom: 12 }}>
+              Masjid Admin Board • 5mins ago
+            </div>
+
+            {/* Inner Notice Card UI */}
+            <div className="card-notice-box">
+              <div className="card-notice-header">
+                <span className="card-notice-pin">📌 Official Notice</span>
+                <span className="card-notice-badge">VERIFIED</span>
+              </div>
+              <div className="card-notice-heading">Jumuah Khutbah Timing</div>
+              <p className="card-notice-text">
+                Khutbah starts at 01:15 PM sharp. Please bring your own prayer mat.
+              </p>
+            </div>
+
+            <div className="card-footer-sub">
+              Direct Mosque Announcements &amp; Notices
+            </div>
+          </div>
+        </div>
+
+        {/* ── CARD 3: REMINDERS 15 MINS BEFORE ── */}
+        <div className="card-3col">
+          <div className="card-3col-top">
+            <h3 className="card-3col-title">
+              Reminders?<br />
+              <span className="text-green-accent">15 mins Before</span><br />
+              Just Like Dad
+            </h3>
+          </div>
+
+          <div className="card-3col-body">
+            {/* Inner box with floating alarm plus button */}
+            <div className="card-inner-box" style={{ position: 'relative' }}>
+              <div className="card-prayer-name">Isha</div>
+              <div className="card-prayer-time-large" style={{ fontSize: '1.9rem', margin: '4px 0 10px' }}>07:30pm</div>
+              
+              <div className="card-time-pill-light">
+                <Clock size={13} color="#666" />
+                starts in 1 Hour 36 mins
               </div>
 
-              {/* Title & Description */}
-              <h3 className="feature-card-title">
-                {feat.title}
-              </h3>
-              <p style={{ color: 'var(--text-gray)', fontSize: '0.94rem', lineHeight: 1.65, marginBottom: '24px', flexGrow: 1 }}>
-                {feat.desc}
-              </p>
-
-              {/* Bottom Stat Detail Strip */}
-              <div className="feature-card-footer">
-                <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 700, color: '#2b3137' }}>
-                  <CheckCircle2 size={14} color="#4eb00a" /> {feat.stat}
-                </span>
-                <div className="feature-arrow-indicator">
-                  <ArrowRight size={15} />
+              {/* Floating Alarm Plus Badge & Mouse Cursor Pointer */}
+              <div className="card-alarm-pointer-badge">
+                <div className="alarm-plus-circle">
+                  <Plus size={16} color="#ffffff" strokeWidth={3} />
+                </div>
+                <div className="cursor-pointer-icon">
+                  <MousePointer size={22} fill="#0a0a08" color="#0a0a08" />
                 </div>
               </div>
             </div>
-          );
-        })}
+
+            <div className="card-3col-location" style={{ marginTop: 18 }}>
+              Baitul Markaz, Indapur • 3mins by walk
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );
