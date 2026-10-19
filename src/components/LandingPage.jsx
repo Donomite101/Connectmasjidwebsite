@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Download, Smartphone } from 'lucide-react';
 
 const LandingPage = () => {
   const path = window.location.pathname;
   const isInvite = path.startsWith('/invite');
   const code = path.split('/').pop();
+  const playStoreUrl = `https://play.google.com/store/apps/details?id=com.connectmasjid.app${isInvite && code ? `&referrer=invite_code%3D${code}` : ''}`;
+
+  /* On Android, try to open the app for this exact link; if it is not installed the browser
+     falls back to the Play Store. Works on both the custom domain and the vercel domain. */
+  const appIntentUrl = `intent://${window.location.host}${path}${window.location.search}#Intent;scheme=https;package=com.connectmasjid.app;S.browser_fallback_url=${encodeURIComponent(playStoreUrl)};end`;
+
+  useEffect(() => {
+    if (/android/i.test(navigator.userAgent) && !sessionStorage.getItem('cm_intent_tried')) {
+      sessionStorage.setItem('cm_intent_tried', '1');
+      window.location.href = appIntentUrl;
+    }
+  }, [appIntentUrl]);
 
   return (
     <div style={{
@@ -67,7 +79,7 @@ const LandingPage = () => {
         </p>
 
         <a 
-          href={`https://play.google.com/store/apps/details?id=com.connectmasjid.app${isInvite && code ? `&referrer=invite_code%3D${code}` : ''}`}
+          href={playStoreUrl}
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -97,6 +109,12 @@ const LandingPage = () => {
           <Download size={20} />
           <span>Download on Google Play</span>
         </a>
+
+        {/android/i.test(navigator.userAgent) && (
+          <a href={appIntentUrl} style={{ display: 'block', marginTop: '16px', color: 'var(--primary-green)', fontWeight: 600, fontSize: '15px' }}>
+            Already installed? Open in app
+          </a>
+        )}
 
         <div style={{ marginTop: '24px', fontSize: '13px', color: '#9CA3AF' }}>
           ConnectMasjid is available for Android.
