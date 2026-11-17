@@ -1,7 +1,7 @@
 export const privacyPolicyData = {
   title: "ConnectMasjid – Privacy Policy & Project Documentation",
-  effectiveDate: "July 13, 2026",
-  lastUpdated: "July 13, 2026",
+  effectiveDate: "November 16, 2026",
+  lastUpdated: "November 16, 2026",
   sections: [
     {
       id: "introduction",
@@ -33,6 +33,14 @@ export const privacyPolicyData = {
             "Device Identifiers: We collect device model, operating system version, app version, and push notification tokens (Firebase Cloud Messaging tokens) to reliably deliver real-time prayer alerts and mosque notices.",
             "Usage Diagnostics: Anonymous diagnostic logs and error reports to help us maintain app stability and performance."
           ]
+        },
+        {
+          title: "D. Non-Collection of Financial / Payment Data (Strict Non-Custodial Policy)",
+          items: [
+            "ConnectMasjid is strictly an informational and non-custodial community directory. We DO NOT collect, store, process, or transmit any sensitive financial data, bank account numbers, credit/debit card numbers, CVV codes, net banking passwords, or UPI PINs.",
+            "Mosque donations occur entirely outside ConnectMasjid on third-party UPI applications (e.g., PhonePe, Google Pay, BHIM, Paytm) directly to the masjid's bank account via NPCI infrastructure. ConnectMasjid never accesses or touches donor financial credentials.",
+            "The QR codes and UPI IDs shown on masjid profiles are purely visual informational references uploaded by registered mosque administrators."
+          ]
         }
       ]
     },
@@ -52,6 +60,10 @@ export const privacyPolicyData = {
         {
           title: "Mosque Verification & Security",
           desc: "To verify mosque administrator identities via secure One-Time Password (OTP) verification and prevent unauthorized changes."
+        },
+        {
+          title: "Non-Custodial Mosque Donation Display",
+          desc: "To display mosque-submitted UPI VPAs and QR codes on public mosque profiles so users can voluntarily donate directly to masjids via external UPI apps."
         },
         {
           title: "Community Connection",
@@ -79,6 +91,10 @@ export const privacyPolicyData = {
         {
           name: "Brevo (Sendinblue)",
           role: "Used for sending secure email verification OTP codes and transactional administrative notifications."
+        },
+        {
+          name: "NPCI / Third-Party UPI Apps (External)",
+          role: "When donating to a mosque, transactions execute externally through third-party UPI applications (PhonePe, Google Pay, BHIM, Paytm, or bank apps) over NPCI rails. ConnectMasjid does not receive, store, or process payment data."
         }
       ],
       footer: "Each third-party provider operates under strict data protection agreements and their respective privacy policies."
@@ -105,7 +121,7 @@ export const privacyPolicyData = {
     {
       id: "user-rights",
       title: "6. User Rights",
-      intro: "You maintain full control over your personal data:",
+      intro: "You maintain full control over your personal data under the Digital Personal Data Protection Act (DPDPA 2023) and applicable laws:",
       items: [
         {
           title: "Right to Access & Update",
@@ -113,7 +129,7 @@ export const privacyPolicyData = {
         },
         {
           title: "Right to Deletion",
-          desc: "You can request the full deletion of your ConnectMasjid account and all associated personal data directly within the app or by contacting support. Upon account deletion, your memberships, tokens, and personal details are permanently erased."
+          desc: "You can request the full deletion of your ConnectMasjid account and all associated personal data directly within the app or by visiting connectmasjid.com/delete-account. Upon account deletion, your memberships, tokens, and personal details are permanently erased."
         },
         {
           title: "Location & Notification Controls",
@@ -137,11 +153,12 @@ export const privacyPolicyData = {
     },
     {
       id: "contact-information",
-      title: "9. Contact Information",
-      intro: "If you have any questions, privacy requests, or feedback regarding this Privacy Policy or your data rights, please contact our support team:",
+      title: "9. Contact Information & Grievance Redressal",
+      intro: "If you have any questions, privacy requests, grievance filings, or feedback regarding this Privacy Policy or your data rights, please contact our designated team:",
       contacts: [
-        { label: "Email Support", value: "support.connectmasjid@gmail.com", href: "mailto:support.connectmasjid@gmail.com" },
-        { label: "Platform", value: "ConnectMasjid Community Support", href: "/contact" }
+        { label: "Grievance Officer & Email Support", value: "support.connectmasjid@gmail.com", href: "mailto:support.connectmasjid@gmail.com" },
+        { label: "Official WhatsApp Community Helpdesk", value: "ConnectMasjid Official WhatsApp Desk", href: "https://chat.whatsapp.com/FcxS6s8UOnWIA6I8fB63uK" },
+        { label: "Jurisdiction & Compliance", value: "Pune, Maharashtra, India (DPDPA 2023 & IT Act 2000)", href: "#" }
       ]
     }
   ]
